@@ -1,11 +1,10 @@
 # What I did today
-# an hour - Revised AWS
+# an hour - Revised AWS Services
 # 30 mins coding
-# 1 hours communication
+# 1 hours Communication
 # 2 hours - 2 set question
 
 ## Tomorrow's Task
-
-# ELK, Terraform reviiosn
+# AWS, Docker revision
 # 1 hour coding
 # 1 hour Quesion Paper
