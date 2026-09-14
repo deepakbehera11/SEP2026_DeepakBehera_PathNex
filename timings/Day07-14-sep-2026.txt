@@ -1,0 +1,8 @@
+# What I did today
+# an hour - Revisied kubernetes
+# 30 mins coding
+# 2 hours - 2 set question
+
+## Tomorrow's Task
+# k8s, aws,  Terraform reviiosn
+# 1 hour coding
