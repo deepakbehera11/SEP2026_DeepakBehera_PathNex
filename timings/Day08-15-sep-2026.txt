@@ -1,0 +1,10 @@
+# What I did today
+# an hour - Revised Kubernetes, EKS
+# 30 mins coding
+# 1 hours communication
+# 2 hours - 2 set question
+
+## Tomorrow's Task
+# Kubernetes with EKS, AWS, CI/CD
+# 1 hour coding
+# 1 hour Quesion Paper
