@@ -1,0 +1,178 @@
+# Terraform — Create EC2 (any instance type)
+
+#- VPC
+#- Subnet
+#- Internet gateway
+#- Route table
+
+
+provider "aws" {
+  region = "us-east-1"
+}
+
+resource "aws_instance" "PathnexEC2" {
+  ami           = "ami-0abcd1234abcd1234"
+  instance_type = "c5.xlarge"
+
+  tags = {
+    Name = "Pathnex-EC2"
+  }
+}
+
+resource "aws_vpc" "PathnexVPC" {
+  cidr_block = "10.10.0.0/16"
+
+  tags = {
+    Name = "Pathnex-VPC"
+  }
+}
+
+resource "aws_subnet" "PathnexSubnet" {
+  vpc_id                  = aws_vpc.PathnexVPC.id
+  cidr_block              = "10.10.1.0/24"
+  map_public_ip_on_launch = true
+
+  tags = {
+    Name = "Pathnex-Subnet"
+  }
+}
+
+resource "aws_internet_gateway" "PathnexIGW" {
+  vpc_id = aws_vpc.PathnexVPC.id
+
+  tags = {
+    Name = "Pathnex-IGW"
+  }
+}
+
+resource "aws_route_table" "PathnexRT" {
+  vpc_id = aws_vpc.PathnexVPC.id
+
+  route {
+    cidr_block = "0.0.0.0/0"
+    gateway_id = aws_internet_gateway.PathnexIGW.id
+  }
+
+  tags = {
+    Name = "Pathnex-RouteTable"
+  }
+}
+
+#  Ansible — Install Nginx & Deploy HTML File
+
+---
+- name: Install Nginx & Deploy HTML file
+  hosts: all
+  become: yes
+
+  tasks: 
+    - name: Install Nginx
+      yum:
+        name: nginx
+        state: present
+
+
+   - name: Enable Nginx
+     service:
+       name: nginx
+       state: started
+       enabled: yes
+
+   - name: Deploy Html File
+     copy:
+       src: files/index.html
+       dest: /var/www/html/html.index
+       owner: www-data
+       group: www-data
+       mode: '0644'
+
+
+## Kubernetes — Create Deployment + Service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pathnex-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: pathnex-app
+  template:
+    metadata: 
+      labels:
+        app: pathenx-app
+    spec:
+      containers:
+        - name: app
+          image: nginx
+	  ports: 
+	    - containerPort: 80
+
+
+---
+apiVersion: v1
+kind: service
+metadata: 
+  name: pathnex-service
+spec:
+  selector:
+    app: pathnex-app
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  type: NodePort
+
+
+## Shell — Print CPU, Memory, Disk
+
+#!/bin/bash
+top
+
+free -h
+
+df -h
+
+## 🔹 Jenkins Pipeline — Scheduled Build
+
+
+pipeline {
+    agent any
+    environment {
+        INSTITUTE_NAME = "Pathnex"
+    }
+    triggers {
+        cron('H 2 * * *') // every day at 2 AM
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                git url: 'https://github.com/Pathnex/sample-java-app.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                sh 'mvn clean package'
+            }
+        }
+    }
+}
+
+
+#  GitLab CI — Scheduled Pipeline
+
+
+stages:
+  - build
+
+build:
+  stage: build
+  image: maven:3.8.1-jdk-17
+  script:
+    - git clone https://github.com/Pathnex/sample-java-app.git
+    - cd sample-java-app
+    - mvn clean package
+ 		
