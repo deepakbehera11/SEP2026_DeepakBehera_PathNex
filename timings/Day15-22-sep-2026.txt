@@ -1,0 +1,9 @@
+# What I did today
+# an hour - ansible
+# 30 mins coding
+# 2 hours - 2 set question
+
+## Tomorrow's Task
+# EKS, Kubernetes, ArgoCD
+# 1 hour coding
+#
